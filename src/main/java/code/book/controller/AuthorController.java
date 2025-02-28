@@ -26,7 +26,11 @@ public class AuthorController {
 
     // 저자 생성
     @PostMapping
-    public ResponseEntity<Author> createAuthor(@RequestBody Author author) {
+    public ResponseEntity<?> createAuthor(@RequestBody Author author) {
+        Optional<Author> existAuthor = authorRepository.findByEmail(author.getEmail());
+        if (existAuthor.isPresent())
+            return ResponseEntity.badRequest().body("이미 존재하는 이메일 입니다.");
+
         return ResponseEntity.ok(authorRepository.save(author));
     }
 
@@ -57,6 +61,17 @@ public class AuthorController {
 
             return ResponseEntity.ok(author);
         }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> deleteAuthor(@PathVariable Long id) {
+        return authorRepository.findById(id).map(author -> {
+            if (!author.getBooks().isEmpty()) {
+                return ResponseEntity.badRequest().body("연관된 도서가 있어 삭제할 수 없습니다.");
+            }
+            authorRepository.delete(author);
+            return ResponseEntity.ok().build();
+        }).orElse(ResponseEntity.badRequest().build());
     }
 
 }

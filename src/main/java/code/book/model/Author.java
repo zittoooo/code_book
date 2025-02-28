@@ -25,5 +25,6 @@ public class Author {
     @Column(unique = true)
     private String email;
 
-    //private List<Book> books;
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Book> books;
 }
