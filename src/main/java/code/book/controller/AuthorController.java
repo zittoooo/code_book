@@ -63,7 +63,7 @@ public class AuthorController {
         }).orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAuthor(@PathVariable Long id) {
         return authorRepository.findById(id).map(author -> {
             if (!author.getBooks().isEmpty()) {

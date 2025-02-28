@@ -1,5 +1,7 @@
 package code.book.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -25,6 +27,8 @@ public class Author {
     @Column(unique = true)
     private String email;
 
+
+    @JsonIgnore  // 순환참조 문제가있어서 넣었더니 문제는 없어짐
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Book> books;
 }
